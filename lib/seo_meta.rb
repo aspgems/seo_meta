@@ -28,7 +28,7 @@ def is_seo_meta(options = {})
       :dependent => :destroy
     }.merge(options.slice(:class_name, :foreign_key, :dependent))
 
-    has_one :seo_meta, ~> { where(:seo_meta_type => self.name) }, has_one_options
+    has_one :seo_meta, proc { where(:seo_meta_type => self.name) }, has_one_options
 
     # Let SeoMetum know about the base
     ::SeoMetum.send :belongs_to, self.name.underscore.gsub('/', '_').to_sym,
