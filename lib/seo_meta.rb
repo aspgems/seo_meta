@@ -6,6 +6,7 @@ module SeoMeta
     def attributes
       @@attributes ||= {
         :browser_title => :string,
+        :meta_keywords => :string,
         :meta_description => :text
       }
     end
@@ -27,11 +28,7 @@ def is_seo_meta(options = {})
       :dependent => :destroy
     }.merge(options.slice(:class_name, :foreign_key, :dependent))
 
-    if ActiveRecord::VERSION::STRING >= '4.0.0'
-      has_one :seo_meta, proc { where(:seo_meta_type => self.name) }, has_one_options
-    else
-      has_one :seo_meta, {:conditions => {:seo_meta_type => self.name}}.merge(has_one_options)
-    end
+    has_one :seo_meta, ~> { where(:seo_meta_type => self.name) }, has_one_options
 
     # Let SeoMetum know about the base
     ::SeoMetum.send :belongs_to, self.name.underscore.gsub('/', '_').to_sym,
